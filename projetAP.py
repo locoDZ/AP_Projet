@@ -37,6 +37,24 @@ class MCQApplication:
         with open(self.users_file, 'w') as f:
             json.dump(self.users, f, indent=4)
 
+    def update_user_login(self, username):
+        """Update or create user login information."""
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if username in self.users:
+            last_login = self.users[username].get('last_login', 'Never')
+            self.users[username]['last_login'] = current_time
+            print(f"\nWelcome back, {username}!")
+            print(f"Your last login was: {last_login}")
+        else:
+            self.users[username] = {
+                "history": [],
+                "last_login": current_time
+            }
+            print(f"\nWelcome, {username}! Thank you for joining.")
+
+        self.save_users()
+
     def display_history(self, username):
         """Display user's MCQ history."""
         if username in self.users and self.users[username]["history"]:
@@ -67,7 +85,7 @@ class MCQApplication:
         print("- Commands: 'all', 'history', 'export', 'exit'")
 
     def get_menu_choice(self, categories):
-        """Get user menu choice with support for both numbers and text."""
+        """Get user menu choice."""
         valid_commands = {
             'all': len(categories) + 1,
             'history': len(categories) + 2,
@@ -99,7 +117,6 @@ class MCQApplication:
             print("- Or one of:", ", ".join(valid_commands.keys()))
 
     def run_test(self, username, category=None):
-        """Run an MCQ test for the user."""
         if category:
             if category not in self.questions:
                 print(f"Error: Category '{category}' not found in questions database!")
@@ -169,10 +186,12 @@ def main():
     print("Welcome to the Computer Science MCQ!")
     username = input("\nEnter your username: ")
 
+    # Update user login and show appropriate welcome message
+    app.update_user_login(username)
+
     categories = app.get_categories()
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"\nWelcome back, {username}!")
         app.display_menu(categories)
 
         choice = app.get_menu_choice(categories)
