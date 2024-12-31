@@ -7,8 +7,63 @@ class MCQApplication:
     def __init__(self):
         self.users_file = "users.json"
         self.questions_file = "questions.json"
+        self.admins = ["riad", "foued"]  # is used to check if a user is an admin or not
         self.load_users()
         self.load_questions()
+
+    def add_questions(self):
+        """Allow the admin to add questions to a specific category."""
+        print("\nAdding Questions:")
+        categories = self.get_categories()
+
+        # Display available categories
+        print("\nAvailable categories:")
+        for i, category in enumerate(categories, 1):
+            print(f"{i}. {category}")
+
+        # Select a category
+        while True:
+            choice = input("\nSelect a category by number: ").strip()
+            if choice.isdigit() and 1 <= int(choice) <= len(categories):
+                category = categories[int(choice) - 1]
+                break
+            print("Invalid choice. Please select a valid category number.")
+
+        # Add questions to the selected category
+        while True:
+            print(f"\nAdding a new question to the category: {category}")
+            question = input("Enter the question: ").strip()
+            options = []
+            for opt in ["a", "b", "c"]:
+                options.append(input(f"Enter option {opt}: ").strip())
+            correct_answer = input("Enter the correct answer (a, b, or c): ").strip().lower()
+
+            if correct_answer not in ['a', 'b', 'c']:
+                print("Invalid correct answer. It must be 'a', 'b', or 'c'.")
+                continue
+
+            # Add the new question to the selected category
+            new_question = {
+                "question": question,
+                "options": options,
+                "correct_answer": correct_answer
+            }
+            self.questions[category].append(new_question)
+            self.save_questions()
+
+            print("\nQuestion added successfully!")
+            choice = input("Do you want to add another question? (yes/no): ").strip().lower()
+            if choice != "yes":
+                break
+
+    def save_questions(self):
+        """Save questions to JSON file."""
+        with open(self.questions_file, 'w') as f:
+            json.dump(self.questions, f, indent=4)
+
+    def is_admin(self, username):
+        """Check if the user is an admin."""
+        return username in self.admins
 
     def load_questions(self):
         """Load questions from JSON file."""
@@ -52,7 +107,7 @@ class MCQApplication:
         """Return available question categories."""
         return list(self.questions.keys())
 
-    def display_menu(self, categories):
+    def display_menu(self, categories, is_admin=False):
         """Display the category selection menu."""
         print("\nAvailable options:")
         for i, category in enumerate(categories, 1):
@@ -61,12 +116,14 @@ class MCQApplication:
         print(f"{len(categories) + 2}. View History")
         print(f"{len(categories) + 3}. Export Results")
         print(f"{len(categories) + 4}. Exit")
+        if is_admin:
+            print(f"{len(categories) + 5}. Add Questions")
         print("\nYou can select an option by entering either:")
         print("- The number (e.g., '1')")
         print("- The category name (e.g., 'Python')")
         print("- Commands: 'all', 'history', 'export', 'exit'")
 
-    def get_menu_choice(self, categories):
+    def get_menu_choice(self, categories, is_admin=False):
         """Get user menu choice with support for both numbers and text."""
         valid_commands = {
             'all': len(categories) + 1,
@@ -74,6 +131,8 @@ class MCQApplication:
             'export': len(categories) + 3,
             'exit': len(categories) + 4
         }
+        if is_admin:
+            valid_commands['add'] = len(categories) + 5
 
         while True:
             choice = input("\nEnter your choice: ").strip().lower()
@@ -81,7 +140,7 @@ class MCQApplication:
             # Try to convert to number if input is numeric
             if choice.isdigit():
                 num_choice = int(choice)
-                if 1 <= num_choice <= len(categories) + 4:
+                if 1 <= num_choice <= len(categories) + (5 if is_admin else 4):
                     return num_choice
 
             # Check for text commands
@@ -94,7 +153,7 @@ class MCQApplication:
                     return i
 
             print("\nInvalid choice. Please enter:")
-            print("- A number between 1 and", len(categories) + 4)
+            print("- A number between 1 and", len(categories) + (5 if is_admin else 4))
             print("- A category name:", ", ".join(categories))
             print("- Or one of:", ", ".join(valid_commands.keys()))
 
@@ -177,6 +236,7 @@ class MCQApplication:
             print("The file users.json is invalid.")
             return False
 
+
 def main():
     app = MCQApplication()
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -184,15 +244,16 @@ def main():
     username = input("\nEnter your username: ")
 
     categories = app.get_categories()
+    is_admin = app.is_admin(username)
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         if app.user_exist(username):
             print(f"\nWelcome back, {username}!")
         else:
             print(f"Welcome , {username}!")
-        app.display_menu(categories)
 
-        choice = app.get_menu_choice(categories)
+        app.display_menu(categories, is_admin)
+        choice = app.get_menu_choice(categories, is_admin)
 
         if choice == len(categories) + 4:  # Exit
             print("\nThank you for using the MCQ application!")
@@ -202,6 +263,8 @@ def main():
             input("Press Enter to continue...")
         elif choice == len(categories) + 3:  # Export Results
             app.export_results(username)
+        elif is_admin and choice == len(categories) + 5:  # Add Questions
+            app.add_questions()
         else:
             selected_category = None if choice == len(categories) + 1 else categories[choice - 1]
             app.run_test(username, selected_category)

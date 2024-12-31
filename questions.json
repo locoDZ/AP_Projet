@@ -1,106 +1,170 @@
 {
-    "Python": [
-        {
-            "question": "What is the data type in Python used to represent text?",
-            "options": ["int", "str", "list"],
-            "correct_answer": "b",
-            "category": "Python"
-        },
-        {
-            "question": "Which of the following is used to define a function in Python?",
-            "options": ["function", "def", "fun"],
-            "correct_answer": "b",
-            "category": "Python"
-        },
-        {
-            "question": "What is the keyword used to create a class in Python?",
-            "options": ["class", "def", "object"],
-            "correct_answer": "a",
-            "category": "Python"
-        },
-        {
-            "question": "Which data structure in Python is immutable?",
-            "options": ["list", "tuple", "dictionary"],
-            "correct_answer": "b",
-            "category": "Python"
-        }
-    ],
-    "Algorithms": [
-        {
-            "question": "What is the average time complexity of searching in a sorted array?",
-            "options": ["O(1)", "O(log n)", "O(n)"],
-            "correct_answer": "b",
-            "category": "Algorithms"
-        },
-        {
-            "question": "Which sorting algorithm has the best average case time complexity?",
-            "options": ["Bubble Sort", "Quick Sort", "Selection Sort"],
-            "correct_answer": "b",
-            "category": "Algorithms"
-        },
-        {
-            "question": "What is the primary use of a hash table?",
-            "options": ["Sorting", "Searching", "Key-value storage"],
-            "correct_answer": "c",
-            "category": "Algorithms"
-        },
-        {
-            "question": "Which graph traversal algorithm uses a queue?",
-            "options": ["DFS", "BFS", "Dijkstra's"],
-            "correct_answer": "b",
-            "category": "Algorithms"
-        }
-    ],
-    "Network": [
-        {
-            "question": "What is the primary protocol used for transferring web pages?",
-            "options": ["FTP", "HTTP", "SMTP"],
-            "correct_answer": "b",
-            "category": "Network"
-        },
-        {
-            "question": "What does IP stand for in networking?",
-            "options": ["Internet Protocol", "Internal Program", "Internet Pathway"],
-            "correct_answer": "a",
-            "category": "Network"
-        },
-        {
-            "question": "What device connects multiple networks and directs traffic?",
-            "options": ["Switch", "Router", "Hub"],
-            "correct_answer": "b",
-            "category": "Network"
-        },
-        {
-            "question": "Which layer of the OSI model is responsible for data encryption?",
-            "options": ["Application", "Session", "Presentation"],
-            "correct_answer": "c",
-            "category": "Network"
-        }
-    ],
-    "Software Engineering": [
-        {
-            "question": "What is the primary goal of software engineering?",
-            "options": ["Developing hardware", "Building reliable software systems", "Designing databases"],
-            "correct_answer": "b",
-            "category": "Software Engineering"
-        },
-        {
-            "question": "Which software development model uses iterations called sprints?",
-            "options": ["Waterfall", "Agile", "V-Model"],
-            "correct_answer": "b",
-            "category": "Software Engineering"
-        },
-        {
-            "question": "What does the acronym 'SDLC' stand for?",
-            "options": ["Software Development Life Cycle", "System Design Level Code", "Software Deployment Lifecycle"],
-            "correct_answer": "a",
-            "category": "Software Engineering"
-        },
-        {
-            "question": "Which of the following is not a software design principle?",
-            "options": ["DRY (Don't Repeat Yourself)", "KISS (Keep It Simple, Stupid)", "Encrypt Everything"],
-            "correct_answer": "c",
-            "category": "Software Engineering"
-        }
-    ]
+  "Python": [
+    {
+      "question": "What is the data type in Python used to represent text?",
+      "options": [
+        "int",
+        "str",
+        "list"
+      ],
+      "correct_answer": "b",
+      "category": "Python"
+    },
+    {
+      "question": "Which of the following is used to define a function in Python?",
+      "options": [
+        "function",
+        "def",
+        "fun"
+      ],
+      "correct_answer": "b",
+      "category": "Python"
+    },
+    {
+      "question": "What is the keyword used to create a class in Python?",
+      "options": [
+        "class",
+        "def",
+        "object"
+      ],
+      "correct_answer": "a",
+      "category": "Python"
+    },
+    {
+      "question": "Which data structure in Python is immutable?",
+      "options": [
+        "list",
+        "tuple",
+        "dictionary"
+      ],
+      "correct_answer": "b",
+      "category": "Python"
+    }
+  ],
+  "Algorithms": [
+    {
+      "question": "What is the average time complexity of searching in a sorted array?",
+      "options": [
+        "O(1)",
+        "O(log n)",
+        "O(n)"
+      ],
+      "correct_answer": "b",
+      "category": "Algorithms"
+    },
+    {
+      "question": "Which sorting algorithm has the best average case time complexity?",
+      "options": [
+        "Bubble Sort",
+        "Quick Sort",
+        "Selection Sort"
+      ],
+      "correct_answer": "b",
+      "category": "Algorithms"
+    },
+    {
+      "question": "What is the primary use of a hash table?",
+      "options": [
+        "Sorting",
+        "Searching",
+        "Key-value storage"
+      ],
+      "correct_answer": "c",
+      "category": "Algorithms"
+    },
+    {
+      "question": "Which graph traversal algorithm uses a queue?",
+      "options": [
+        "DFS",
+        "BFS",
+        "Dijkstra's"
+      ],
+      "correct_answer": "b",
+      "category": "Algorithms"
+    }
+  ],
+  "Network": [
+    {
+      "question": "What is the primary protocol used for transferring web pages?",
+      "options": [
+        "FTP",
+        "HTTP",
+        "SMTP"
+      ],
+      "correct_answer": "b",
+      "category": "Network"
+    },
+    {
+      "question": "What does IP stand for in networking?",
+      "options": [
+        "Internet Protocol",
+        "Internal Program",
+        "Internet Pathway"
+      ],
+      "correct_answer": "a",
+      "category": "Network"
+    },
+    {
+      "question": "What device connects multiple networks and directs traffic?",
+      "options": [
+        "Switch",
+        "Router",
+        "Hub"
+      ],
+      "correct_answer": "b",
+      "category": "Network"
+    },
+    {
+      "question": "Which layer of the OSI model is responsible for data encryption?",
+      "options": [
+        "Application",
+        "Session",
+        "Presentation"
+      ],
+      "correct_answer": "c",
+      "category": "Network"
+    }
+  ],
+  "Software Engineering": [
+    {
+      "question": "What is the primary goal of software engineering?",
+      "options": [
+        "Developing hardware",
+        "Building reliable software systems",
+        "Designing databases"
+      ],
+      "correct_answer": "b",
+      "category": "Software Engineering"
+    },
+    {
+      "question": "Which software development model uses iterations called sprints?",
+      "options": [
+        "Waterfall",
+        "Agile",
+        "V-Model"
+      ],
+      "correct_answer": "b",
+      "category": "Software Engineering"
+    },
+    {
+      "question": "What does the acronym 'SDLC' stand for?",
+      "options": [
+        "Software Development Life Cycle",
+        "System Design Level Code",
+        "Software Deployment Lifecycle"
+      ],
+      "correct_answer": "a",
+      "category": "Software Engineering"
+    },
+    {
+      "question": "Which of the following is not a software design principle?",
+      "options": [
+        "DRY (Don't Repeat Yourself)",
+        "KISS (Keep It Simple, Stupid)",
+        "Encrypt Everything"
+      ],
+      "correct_answer": "c",
+      "category": "Software Engineering"
+    }
+  ]
 }
