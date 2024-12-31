@@ -162,6 +162,20 @@ class MCQApplication:
         print(f"\nResults exported to {filename}")
         input("\nPress Enter to continue...")
 
+    def user_exist(self, username):
+        try:
+            # Load the JSON file
+            with open(self.users_file, 'r') as file:
+                users = json.load(file)
+
+            # Check if the username exists in the keys
+            return username in users
+        except FileNotFoundError:
+            print("The file users.json does not exist.")
+            return False
+        except json.JSONDecodeError:
+            print("The file users.json is invalid.")
+            return False
 
 def main():
     app = MCQApplication()
@@ -172,7 +186,10 @@ def main():
     categories = app.get_categories()
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"\nWelcome back, {username}!")
+        if app.user_exist(username):
+            print(f"\nWelcome back, {username}!")
+        else:
+            print(f"Welcome , {username}!")
         app.display_menu(categories)
 
         choice = app.get_menu_choice(categories)

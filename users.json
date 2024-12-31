@@ -26,5 +26,21 @@
                 "category": "All"
             }
         ]
+    },
+    "riad": {
+        "history": [
+            {
+                "date": "2024-12-31",
+                "score": 3,
+                "total": 4,
+                "category": "All"
+            },
+            {
+                "date": "2024-12-31",
+                "score": 11,
+                "total": 16,
+                "category": "All"
+            }
+        ]
     }
 }
