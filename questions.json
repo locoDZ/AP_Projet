@@ -1,0 +1,31 @@
+
+{
+    "Python": [
+        {
+            "question": "What is the data type in Python used to represent text?",
+            "options": ["int", "str", "list"],
+            "correct_answer": "b",
+            "category": "Python"
+        },
+        {
+            "question": "Which of the following is used to define a function in Python?",
+            "options": ["function", "def", "fun"],
+            "correct_answer": "b",
+            "category": "Python"
+        }
+    ],
+    "Algorithms": [
+        {
+            "question": "What is the average time complexity of searching in a sorted array?",
+            "options": ["O(1)", "O(log n)", "O(n)"],
+            "correct_answer": "b",
+            "category": "Algorithms"
+        },
+        {
+            "question": "Which sorting algorithm has the best average case time complexity?",
+            "options": ["Bubble Sort", "Quick Sort", "Selection Sort"],
+            "correct_answer": "b",
+            "category": "Algorithms"
+        }
+    ]
+}
