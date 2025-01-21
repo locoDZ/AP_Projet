@@ -7,21 +7,19 @@ class MCQApplication:
     def __init__(self):
         self.users_file = "users.json"
         self.questions_file = "questions.json"
-        self.admins = ["riad", "foued"]  # is used to check if a user is an admin or not
+        self.admins = ["riad", "foued"]
         self.load_users()
         self.load_questions()
 
     def add_questions(self):
-        """Allow the admin to add questions to a specific category."""
+
         print("\nAdding Questions:")
         categories = self.get_categories()
 
-        # Display available categories
         print("\nAvailable categories:")
         for i, category in enumerate(categories, 1):
             print(f"{i}. {category}")
 
-        # Select a category
         while True:
             choice = input("\nSelect a category by number: ").strip()
             if choice.isdigit() and 1 <= int(choice) <= len(categories):
@@ -29,7 +27,6 @@ class MCQApplication:
                 break
             print("Invalid choice. Please select a valid category number.")
 
-        # Add questions to the selected category
         while True:
             print(f"\nAdding a new question to the category: {category}")
             question = input("Enter the question: ").strip()
@@ -42,7 +39,6 @@ class MCQApplication:
                 print("Invalid correct answer. It must be 'a', 'b', or 'c'.")
                 continue
 
-            # Add the new question to the selected category
             new_question = {
                 "question": question,
                 "options": options,
@@ -57,16 +53,15 @@ class MCQApplication:
                 break
 
     def save_questions(self):
-        """Save questions to JSON file."""
+
         with open(self.questions_file, 'w') as f:
             json.dump(self.questions, f, indent=4)
 
     def is_admin(self, username):
-        """Check if the user is an admin."""
+
         return username in self.admins
 
     def load_questions(self):
-        """Load questions from JSON file."""
         try:
             with open(self.questions_file, 'r') as f:
                 self.questions = json.load(f)
@@ -79,7 +74,7 @@ class MCQApplication:
             exit(1)
 
     def load_users(self):
-        """Load users from JSON file or create new file if it doesn't exist."""
+
         if os.path.exists(self.users_file):
             with open(self.users_file, 'r') as f:
                 self.users = json.load(f)
@@ -88,12 +83,12 @@ class MCQApplication:
             self.save_users()
 
     def save_users(self):
-        """Save users to JSON file."""
+
         with open(self.users_file, 'w') as f:
             json.dump(self.users, f, indent=4)
 
     def display_history(self, username):
-        """Display user's MCQ history."""
+
         if username in self.users and self.users[username]["history"]:
             print(f"\n{username}'s History:")
             for record in self.users[username]["history"]:
@@ -104,11 +99,11 @@ class MCQApplication:
         print()
 
     def get_categories(self):
-        """Return available question categories."""
+
         return list(self.questions.keys())
 
     def display_menu(self, categories, is_admin=False):
-        """Display the category selection menu."""
+
         print("\nAvailable options:")
         for i, category in enumerate(categories, 1):
             print(f"{i}. {category}")
@@ -124,7 +119,7 @@ class MCQApplication:
         print("- Commands: 'all', 'history', 'export', 'exit'")
 
     def get_menu_choice(self, categories, is_admin=False):
-        """Get user menu choice with support for both numbers and text."""
+
         valid_commands = {
             'all': len(categories) + 1,
             'history': len(categories) + 2,
@@ -137,17 +132,14 @@ class MCQApplication:
         while True:
             choice = input("\nEnter your choice: ").strip().lower()
 
-            # Try to convert to number if input is numeric
             if choice.isdigit():
                 num_choice = int(choice)
                 if 1 <= num_choice <= len(categories) + (5 if is_admin else 4):
                     return num_choice
 
-            # Check for text commands
             if choice in valid_commands:
                 return valid_commands[choice]
 
-            # Check for category names
             for i, category in enumerate(categories, 1):
                 if choice == category.lower():
                     return i
@@ -157,15 +149,22 @@ class MCQApplication:
             print("- A category name:", ", ".join(categories))
             print("- Or one of:", ", ".join(valid_commands.keys()))
 
+    import random
+    from datetime import datetime
+
     def run_test(self, username, category=None):
-        """Run an MCQ test for the user."""
+        """Run a quiz for the user, selecting questions based on the chosen category."""
         if category:
+            # Vérifier si la catégorie existe
             if category not in self.questions:
                 print(f"Error: Category '{category}' not found in questions database!")
                 return 0, 0
-            questions = self.questions[category]
+            # Sélectionner 5 questions aléatoires dans la catégorie choisie
+            questions = random.sample(self.questions[category], min(5, len(self.questions[category])))
         else:
-            questions = [q for cats in self.questions.values() for q in cats]
+            # Fusionner toutes les catégories et sélectionner 10 questions aléatoires
+            all_questions = [q for cat_questions in self.questions.values() for q in cat_questions]
+            questions = random.sample(all_questions, min(10, len(all_questions)))
 
         score = 0
         total_questions = len(questions)
@@ -173,9 +172,10 @@ class MCQApplication:
         print(f"\nStarting quiz for category: {category or 'All Categories'}")
         for i, question in enumerate(questions, 1):
             print(f"\nQuestion {i}: {question['question']}")
-            for j, option in enumerate(question['options'], 97):  # 97 is ASCII for 'a'
+            for j, option in enumerate(question['options'], 97):  # 97 est le code ASCII pour 'a'
                 print(f"{chr(j)}) {option}")
 
+            # Récupérer la réponse de l'utilisateur
             while True:
                 answer = input("Answer: ").lower()
                 if answer in ['a', 'b', 'c']:
@@ -190,7 +190,7 @@ class MCQApplication:
                 correct_option = question['options'][ord(question['correct_answer']) - 97]
                 print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
 
-        # Save results
+        # Enregistrer les résultats dans l'historique de l'utilisateur
         test_record = {
             "date": datetime.now().strftime("%Y-%m-%d"),
             "score": score,
@@ -207,8 +207,60 @@ class MCQApplication:
         input("\nPress Enter to continue...")
         return score, total_questions
 
+    def run_test(self, username, category=None):
+
+         if category:
+             if category not in self.questions:
+                 print(f"Error: Category '{category}' not found in questions database!")
+                 return 0, 0
+             questions = self.questions[category]
+         else:
+             questions = [q for cats in self.questions.values() for q in cats]
+
+         score = 0
+         total_questions = len(questions)
+
+         print(f"\nStarting quiz for category: {category or 'All Categories'}")
+         for i, question in enumerate(questions, 1):
+             print(f"\nQuestion {i}: {question['question']}")
+             for j, option in enumerate(question['options'], 97):
+                 print(f"{chr(j)}) {option}")
+
+             while True:
+                 answer = input("Answer: ").lower()
+                 if answer in ['a', 'b', 'c']:
+                     break
+                 print("Please enter a, b, or c.")
+
+             is_correct = answer == question['correct_answer']
+             if is_correct:
+                 score += 1
+                 print("Correct!")
+             else:
+                 correct_option = question['options'][ord(question['correct_answer']) - 97]
+                 print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
+
+
+         test_record = {
+             "date": datetime.now().strftime("%Y-%m-%d"),
+             "score": score,
+             "total": total_questions,
+             "category": category or "All"
+         }
+
+         if username not in self.users:
+             self.users[username] = {"history": []}
+         self.users[username]["history"].append(test_record)
+         self.save_users()
+
+         print(f"\nYour final score: {score}/{total_questions}")
+         input("\nPress Enter to continue...")
+         return score, total_questions
+
+
+
     def export_results(self, username):
-        """Export user's results to a CSV file."""
+
         if username not in self.users:
             print("User not found.")
             return
@@ -223,11 +275,8 @@ class MCQApplication:
 
     def user_exist(self, username):
         try:
-            # Load the JSON file
             with open(self.users_file, 'r') as file:
                 users = json.load(file)
-
-            # Check if the username exists in the keys
             return username in users
         except FileNotFoundError:
             print("The file users.json does not exist.")

@@ -40,6 +40,12 @@
                 "score": 11,
                 "total": 16,
                 "category": "All"
+            },
+            {
+                "date": "2025-01-21",
+                "score": 5,
+                "total": 5,
+                "category": "Cybersecurity"
             }
         ]
     }
