@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 import os
-
+import random
 
 class MCQApplication:
     def __init__(self):
@@ -126,89 +126,75 @@ class MCQApplication:
             print("- A number between 1 and", len(categories) + (5 if is_admin else 4))
             print("- A category name:", ", ".join(categories))
             print("- Or one of:", ", ".join(valid_commands.keys()))
-    #Run an MCQ test for the user.
-   def run_test(self, username, category=None):
-    # Checking if category exists
-    if category:
-        if category not in self.questions:
-            print(f"Error: Category '{category}' not found in questions database!")
-            return 0, 0
-        questions = self.questions[category]
-    else:
-        questions = [q for cats in self.questions.values() for q in cats]
 
-    total_available = len(questions)
+    #Run an MCQ test for the user
 
-    # Let user choose number of questions
-    while True:
-        try:
-            desired_count = input(f"\nHow many questions would you like to answer? (1-{total_available}): ").strip()
-            desired_count = int(desired_count)
-            if 1 <= desired_count <= total_available:
-                break
-            print(f"Please enter a number between 1 and {total_available}.")
-        except ValueError:
-            print("Please enter a valid number.")
-
-    # Randomly select the desired number of questions
-    import random
-    selected_questions = random.sample(questions, desired_count)
-
-    score = 0
-    total_questions = len(selected_questions)
-
-    print(f"\nStarting quiz for category: {category or 'All Categories'}")
-    print(f"Answering {desired_count} out of {total_available} available questions")
-
-    for i, question in enumerate(selected_questions, 1):
-        print(f"\nQuestion {i}: {question['question']}")
-        for j, option in enumerate(question['options'], 97):  # 97 is ASCII for 'a'
-            print(f"{chr(j)}) {option}")
-        while True:
-            answer = input("Answer: ").lower()
-            if answer in ['a', 'b', 'c']:
-                break
-            print("Please enter a, b, or c.")
-
-        # Test correct
-        is_correct = answer == question['correct_answer']
-        if is_correct:
-            score += 1
-            print("Correct!")
+    def run_test(self, username, category=None):
+        # Initialize questions based on category
+        if category:
+            if category not in self.questions:
+                print(f"Error: Category '{category}' not found in questions database!")
+                return 0, 0
+            questions = self.questions[category]
         else:
-            correct_option = question['options'][ord(question['correct_answer']) - 97]
-            print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
+            questions = [q for cats in self.questions.values() for q in cats]
 
-    test_record = {
-        "date": datetime.now().strftime("%Y-%m-%d"),
-        "score": score,
-        "total": total_questions,
-        "category": category or "All"
-    }
+        # Calculate total available questions
+        total_available = len(questions)
 
-    # Checking if user has history to update it
-    if username not in self.users:
-        self.users[username] = {"history": []}
-    self.users[username]["history"].append(test_record)
-    self.saveUsers()
+        # Let user choose number of questions
+        while True:
+            try:
+                desired_count = input(f"\nHow many questions would you like to answer? (1-{total_available}): ").strip()
+                desired_count = int(desired_count)
+                if 1 <= desired_count <= total_available:
+                    break
+                print(f"Please enter a number between 1 and {total_available}.")
+            except ValueError:
+                print("Please enter a valid number.")
 
-        print(f"\nYour final score  is: {score}/{total_questions}")
-        input("\nPress Enter to continue..")
-        return score, total_questions
-    #cvs handling file
-    def export_results(self, username):
-        """Export user's results to a CSV file."""
+        selected_questions = random.sample(questions, desired_count)
+
+        score = 0
+        total_questions = len(selected_questions)
+
+        print(f"\nStarting quiz for category: {category or 'All Categories'}")
+        print(f"Answering {desired_count} out of {total_available} available questions")
+
+        for i, question in enumerate(selected_questions, 1):
+            print(f"\nQuestion {i}: {question['question']}")
+            for j, option in enumerate(question['options'], 97):  # 97 is ASCII for 'a'
+                print(f"{chr(j)}) {option}")
+            while True:
+                answer = input("Answer: ").lower()
+                if answer in ['a', 'b', 'c']:
+                    break
+                print("Please enter a, b, or c.")
+
+            # Test correct
+            is_correct = answer == question['correct_answer']
+            if is_correct:
+                score += 1
+                print("Correct!")
+            else:
+                correct_option = question['options'][ord(question['correct_answer']) - 97]
+                print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
+
+        test_record = {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "score": score,
+            "total": total_questions,
+            "category": category or "All"
+        }
+
+        # Checking if user has history to update it
         if username not in self.users:
-            print("User not found.")
-            return
-        filename = f"{username}_results.csv"
-        with open(filename, 'w') as f:
-            f.write("Date,Score,Total Questions,Catigory\n")
-            for record in self.users[username]["history"]:
-                f.write(f"{record['date']},{record['score']},{record['total']},{record['category']}\n")
-        print(f"\nResults exported to {filename}")
-        input("\nPress Enter to continue...")
+            self.users[username] = {"history": []}
+        self.users[username]["history"].append(test_record)
+        self.saveUsers()
 
+        print(f"\nYour final score is: {score}/{total_questions}")
+        input("\nPress Enter to continue..")
     def displayHistory(self, username):
 
         if username in self.users and self.users[username]["history"]:

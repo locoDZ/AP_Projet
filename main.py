@@ -20,7 +20,7 @@ def main():
         app.display_menu(categories, is_admin)
         choice = app.getMenuChoice(categories, is_admin)
         if choice == len(categories) + 4:  # Exit
-            print("\nThank you for using ourS MCQ!")
+            print("\nThank you for using the MCQ!")
             break
         elif choice == len(categories) + 2:  # View History
             app.displayHistory(username)
@@ -34,5 +34,5 @@ def main():
             app.run_test(username, selected_category)
 
 
-if __name__ == "____main____":
+if __name__ == "__main__":
     main()
