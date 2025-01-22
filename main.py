@@ -34,5 +34,5 @@ def main():
             app.run_test(username, selected_category)
 
 
-if __name__ == "__main__":
+if __name__ == "____main____":
     main()
