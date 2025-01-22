@@ -6,13 +6,13 @@ import random
 class MCQApplication:
     def __init__(self):
         self.usersf = "users.json"
-        self.questions = "questions.json"
+        self.questionsf = "questions.json"
         self.admins = ["riad", "fouad","youcef","admin"]  # list of admins
         self.load_users()
         self.load_questions()
 
     #function for admin to add questions to a specific category.
-    def add_questions(self):
+    def addQuestions(self):
         print("\nAdding Questions:")
         categories = self.get_categories()
 
@@ -52,21 +52,18 @@ class MCQApplication:
             choice = input("Do you want to add another question? (yes/no): ").strip().lower()
             if choice != "yes":
                 break
-    #Save questions to JSON file.
+
     def save_questions(self):
-
-
-        with open(self.questions, 'w') as f:
+        with open(self.questionsf, 'w') as f:
             json.dump(self.questions, f, indent=4)
 
 
     def is_admin(self, username):
         return username in self.admins
 
-    def load_questions(self): #Load questions from JSON file.
-
-            with open(self.questions, 'r') as f:
-                self.questions = json.load(f)
+    def load_questions(self):
+        with open(self.questionsf, 'r') as f:  # Changed from self.questions
+            self.questions = json.load(f)
 
     def load_users(self):
         if os.path.exists(self.usersf):
@@ -205,4 +202,17 @@ class MCQApplication:
         else:
             print("\nNo previous history found.")
         print()
+
+    def exportResults(self, username):
+        """Export user's results to a CSV file."""
+        if username not in self.users:
+            print("User not found.")
+            return
+        filename = f"{username}_results.csv"
+        with open(filename, 'w') as f:
+            f.write("Date,Score,Total Questions,Catigory\n")
+            for record in self.users[username]["history"]:
+                f.write(f"{record['date']},{record['score']},{record['total']},{record['category']}\n")
+        print(f"\nResults exported to {filename}")
+        input("\nPress Enter to continue...")
 
