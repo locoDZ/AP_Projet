@@ -12,12 +12,12 @@ class MCQApplication:
         self.load_questions()
 
     #function for admin to add questions to a specific category.
-    def add_questions(self):
-        print("\nAdding Questions:")
+    def addQuestions(self):
+        print("\nAding Questions:")
         categories = self.get_categories()
 
         # Display available categories
-        print("\nAvailable categories:")
+        print("\nAvailable catigories:")
         for i, category in enumerate(categories, 1):
             print(f"{i}. {category}")
         # Select a category
@@ -26,7 +26,7 @@ class MCQApplication:
             if choice.isdigit() and 1 <= int(choice) <= len(categories):
                 category = categories[int(choice) - 1]
                 break
-            print("Invalid choice. Please select a valid category number.")
+            print("Invalid choice. Please select a valid catigory number.")
         # Add questions to the selected category
         while True:
             print(f"\nAdding a new question to the category: {category}")
@@ -43,6 +43,7 @@ class MCQApplication:
             # Add the new question to the selected category
             new_question = {
                 "question": question,
+
                 "options": options,
                 "correct_answer": correct_answer
             }
@@ -52,26 +53,22 @@ class MCQApplication:
             choice = input("Do you want to add another question? (yes/no): ").strip().lower()
             if choice != "yes":
                 break
-    #Save questions to JSON file.
+
     def save_questions(self):
+
+
         with open(self.questions, 'w') as f:
             json.dump(self.questions, f, indent=4)
-    #Check if the user is an admin.
+
+
     def is_admin(self, username):
         return username in self.admins
 
     def load_questions(self): #Load questions from JSON file.
-        try:
+
             with open(self.questions, 'r') as f:
                 self.questions = json.load(f)
-        except FileNotFoundError:
-            print(f"Error: {self.questions} not found!")
-            print("Please ensure the questions file exists in the same directory.")
-            exit(1)
-        except json.JSONDecodeError:
-            print(f"Error: {self.questions} is not properly formatted!")
-            exit(1)
-    #Load users from JSON file or create new file if it doesn't exist.
+
     def load_users(self):
         if os.path.exists(self.usersf):
             with open(self.usersf, 'r') as f:
@@ -83,17 +80,11 @@ class MCQApplication:
     def saveUsers(self):
         with open(self.usersf, 'w') as f:
             json.dump(self.users, f, indent=4)
-    def displayHistory(self, username):
-        """Display user's MCQ history."""
-        if username in self.users and self.users[username]["history"]:
-            print(f"\n{username}'s History:")
-            for record in self.users[username]["history"]:
-                print(f"- Date: {record['date']}, Category: {record['category']}, "
-                      f"Score: {record['score']}/{record['total']}")
-        else:
-            print("\nNo previous history found.")
-        print()
-    #Return available question categories."""
+    def userExist(self, username):
+            with open(self.usersf, 'r') as file:
+                users = json.load(file)
+            return username in users
+
     def get_categories(self):
         return list(self.questions.keys())
 
@@ -108,10 +99,7 @@ class MCQApplication:
         print(f"{len(categories) + 4}. Exit")
         if is_admin:
             print(f"{len(categories) + 5}. Add Questions")
-        print("\nYou can select an option by entering either:")
-        print("- The number (e.g., '1')")
-        print("- The category name (e.g., 'Python')")
-        print("- Commands: 'all', 'history', 'export', 'exit'")
+
 
     def getMenuChoice(self, categories, is_admin=False):
         """Get user menu choice with support for both numbers and text."""
@@ -139,7 +127,7 @@ class MCQApplication:
             print("- A number between 1 and", len(categories) + (5 if is_admin else 4))
             print("- A category name:", ", ".join(categories))
             print("- Or one of:", ", ".join(valid_commands.keys()))
-    #Run an MCQ test for the user.
+
     def run_test(self, username, category=None):
       #checking if categorie exist and doing test on categorie
         if category:
@@ -181,31 +169,33 @@ class MCQApplication:
         if username not in self.users:
             self.users[username] = {"history": []}
         self.users[username]["history"].append(test_record)
-        self.save_users()
+        self.saveUsers()
 
-        print(f"\nYour final score: {score}/{total_questions}")
-        input("\nPress Enter to continue...")
+        print(f"\nYour final score  is: {score}/{total_questions}")
+        input("\nPress Enter to continue..")
         return score, total_questions
     #cvs handling file
-    def export_results(self, username):
+    def exportResults(self, username):
         """Export user's results to a CSV file."""
         if username not in self.users:
             print("User not found.")
             return
         filename = f"{username}_results.csv"
         with open(filename, 'w') as f:
-            f.write("Date,Score,Total Questions,Category\n")
+            f.write("Date,Score,Total Questions,Catigory\n")
             for record in self.users[username]["history"]:
                 f.write(f"{record['date']},{record['score']},{record['total']},{record['category']}\n")
         print(f"\nResults exported to {filename}")
         input("\nPress Enter to continue...")
- # check user existance
-    def user_exist(self, username):
-        try:
-            with open(self.usersf, 'r') as file:
-                users = json.load(file)
-            return username in users
-        except FileNotFound:
-            print("The file users.json does not exist.")
-            return False
+
+    def displayHistory(self, username):
+
+        if username in self.users and self.users[username]["history"]:
+            print(f"\n{username}'s History:")
+            for record in self.users[username]["history"]:
+                print(f"- Date: {record['date']}, Category: {record['category']}, "
+                      f"Score: {record['score']}/{record['total']}")
+        else:
+            print("\nNo previous history found.")
+        print()
 
