@@ -24,6 +24,18 @@
                 "score": 4,
                 "total": 4,
                 "category": "All"
+            },
+            {
+                "date": "2025-01-22",
+                "score": 2,
+                "total": 4,
+                "category": "Python"
+            },
+            {
+                "date": "2025-01-22",
+                "score": 2,
+                "total": 2,
+                "category": "All"
             }
         ]
     },
