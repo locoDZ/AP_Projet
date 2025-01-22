@@ -12,12 +12,12 @@ class MCQApplication:
         self.load_questions()
 
     #function for admin to add questions to a specific category.
-    def addQuestions(self):
-        print("\nAding Questions:")
+    def add_questions(self):
+        print("\nAdding Questions:")
         categories = self.get_categories()
 
         # Display available categories
-        print("\nAvailable catigories:")
+        print("\nAvailable categories:")
         for i, category in enumerate(categories, 1):
             print(f"{i}. {category}")
         # Select a category
@@ -26,7 +26,7 @@ class MCQApplication:
             if choice.isdigit() and 1 <= int(choice) <= len(categories):
                 category = categories[int(choice) - 1]
                 break
-            print("Invalid choice. Please select a valid catigory number.")
+            print("Invalid choice. Please select a valid category number.")
         # Add questions to the selected category
         while True:
             print(f"\nAdding a new question to the category: {category}")
@@ -43,7 +43,6 @@ class MCQApplication:
             # Add the new question to the selected category
             new_question = {
                 "question": question,
-
                 "options": options,
                 "correct_answer": correct_answer
             }
@@ -53,7 +52,7 @@ class MCQApplication:
             choice = input("Do you want to add another question? (yes/no): ").strip().lower()
             if choice != "yes":
                 break
-
+    #Save questions to JSON file.
     def save_questions(self):
 
 
@@ -127,55 +126,77 @@ class MCQApplication:
             print("- A number between 1 and", len(categories) + (5 if is_admin else 4))
             print("- A category name:", ", ".join(categories))
             print("- Or one of:", ", ".join(valid_commands.keys()))
+    #Run an MCQ test for the user.
+   def run_test(self, username, category=None):
+    # Checking if category exists
+    if category:
+        if category not in self.questions:
+            print(f"Error: Category '{category}' not found in questions database!")
+            return 0, 0
+        questions = self.questions[category]
+    else:
+        questions = [q for cats in self.questions.values() for q in cats]
 
-    def run_test(self, username, category=None):
-      #checking if categorie exist and doing test on categorie
-        if category:
-            if category not in self.questions:
-                print(f"Error: Category '{category}' not found in questions database!")
-                return 0, 0
-            questions = self.questions[category]
+    total_available = len(questions)
+
+    # Let user choose number of questions
+    while True:
+        try:
+            desired_count = input(f"\nHow many questions would you like to answer? (1-{total_available}): ").strip()
+            desired_count = int(desired_count)
+            if 1 <= desired_count <= total_available:
+                break
+            print(f"Please enter a number between 1 and {total_available}.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+    # Randomly select the desired number of questions
+    import random
+    selected_questions = random.sample(questions, desired_count)
+
+    score = 0
+    total_questions = len(selected_questions)
+
+    print(f"\nStarting quiz for category: {category or 'All Categories'}")
+    print(f"Answering {desired_count} out of {total_available} available questions")
+
+    for i, question in enumerate(selected_questions, 1):
+        print(f"\nQuestion {i}: {question['question']}")
+        for j, option in enumerate(question['options'], 97):  # 97 is ASCII for 'a'
+            print(f"{chr(j)}) {option}")
+        while True:
+            answer = input("Answer: ").lower()
+            if answer in ['a', 'b', 'c']:
+                break
+            print("Please enter a, b, or c.")
+
+        # Test correct
+        is_correct = answer == question['correct_answer']
+        if is_correct:
+            score += 1
+            print("Correct!")
         else:
-            questions = [q for cats in self.questions.values() for q in cats]
+            correct_option = question['options'][ord(question['correct_answer']) - 97]
+            print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
 
-        score = 0
-        total_questions = len(questions)
-        #doing all categories
-        print(f"\nStarting quiz for category: {category or 'All Categories'}")
-        for i, question in enumerate(questions, 1):
-            print(f"\nQuestion {i}: {question['question']}")
-            for j, option in enumerate(question['options'], 97):  # 97 is ASCII for 'a'
-                print(f"{chr(j)}) {option}")
-            while True:
-                answer = input("Answer: ").lower()
-                if answer in ['a', 'b', 'c']:
-                    break
-                print("Please enter a, b, or c.")
-            #test correct
-            is_correct = answer == question['correct_answer']
-            if is_correct:
-                score += 1
-                print("Correct!")
-            else:
-                correct_option = question['options'][ord(question['correct_answer']) - 97]
-                print(f"Incorrect. The correct answer was {question['correct_answer']}) {correct_option}")
-        test_record = {
-            "date": datetime.now().strftime("%Y-%m-%d"),
-            "score": score,
-            "total": total_questions,
-            "category": category or "All"
-        }
-      #cheking if user have history to update it
-        if username not in self.users:
-            self.users[username] = {"history": []}
-        self.users[username]["history"].append(test_record)
-        self.saveUsers()
+    test_record = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "score": score,
+        "total": total_questions,
+        "category": category or "All"
+    }
+
+    # Checking if user has history to update it
+    if username not in self.users:
+        self.users[username] = {"history": []}
+    self.users[username]["history"].append(test_record)
+    self.saveUsers()
 
         print(f"\nYour final score  is: {score}/{total_questions}")
         input("\nPress Enter to continue..")
         return score, total_questions
     #cvs handling file
-    def exportResults(self, username):
+    def export_results(self, username):
         """Export user's results to a CSV file."""
         if username not in self.users:
             print("User not found.")
